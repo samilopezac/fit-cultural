@@ -169,11 +169,29 @@
           
           // Enviar respuestas al Google Sheets mediante fetch
           
-          fetch("https://script.google.com/macros/s/AKfycbyYgThniv1fIzxiWEl2iMJZZR-NpMkEAyvY6QB-6AG_mhbAAQBksSPbuDl_8EX7Y08r/exec", {method: "POST",body: JSON.stringify({ answers }),headers: {
+         const body = {
+  Fecha: new Date().toLocaleString(),
+  Nombre: answers[0],
+  Puesto: answers[1],
+  "Respuesta 1": answers[2],
+  "Respuesta 2": answers[3],
+  "Respuesta 3": answers[4],
+  "Respuesta 4": answers[5],
+  "Respuesta 5": answers[6],
+  "Respuesta 6": answers[7],
+  "Respuesta 7": answers[8],
+  "Respuesta 8": answers[9],
+  "Respuesta 9": answers[10]
+};
+
+fetch("https://api.sheetbest.com/sheets/67e067a5-93c2-4015-8e72-c5580a5ba828", {
+  method: "POST",
+  body: JSON.stringify(body),
+  headers: {
     "Content-Type": "application/json"
   }
 })
-.then(res => res.text())
+.then(res => res.json())
 .then(msg => console.log("✅ Respuestas enviadas:", msg))
 .catch(err => console.error("❌ Error al enviar respuestas:", err));
 
