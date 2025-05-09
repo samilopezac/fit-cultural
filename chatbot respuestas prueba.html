@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fit Cultural</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=PT+Serif:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #000033;
+      font-family: 'Montserrat', sans-serif;
+    }
+    h1, h2 {
+      font-family: 'PT Serif', serif;
+    }
+
+    .dot-flash {
+      display: flex;
+      gap: 4px;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .dot-flash span {
+      width: 6px;
+      height: 6px;
+      background-color: #B3B3C2;
+      border-radius: 50%;
+      animation: blink 1.4s infinite both;
+    }
+
+    .dot-flash span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .dot-flash span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0; }
+      40% { opacity: 1; }
+    }
+  </style>
+</head>
+<body class="min-h-screen text-[#000033] flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-[#000033] text-white p-6">
+    <div class="max-w-5xl mx-auto text-center">
+      <h1 class="text-3xl md:text-4xl font-bold">Fit Cultural con Neobot</h1>
+      <p class="text-[#CCCCD6] mt-1">Alineamiento cultural con tu empresa.</p>
+    </div>
+  </header>
+
+  <!-- Main container -->
+  <main class="max-w-6xl mx-auto p-6 flex-grow">
+    <div class="bg-white rounded-2xl shadow-xl grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+
+      <!-- Intro lado izquierdo -->
+      <section class="bg-[#F6F5FA] p-8 text-[#000033] flex flex-col justify-between">
+        <div>
+          <h2 class="text-2xl font-semibold text-[#0A29CD] mb-4">¡Hola!</h2>
+          <p class="text-[#4D4D70] leading-relaxed">
+            En NEO valoramos tanto las habilidades como la forma en la que cada persona se relaciona, aprende y enfrenta los desafíos. Neobot nos ayudará a conocerte mejor: entender cómo trabajas, qué te motiva y cómo vives tus valores en el día a día. No buscamos respuestas perfectas, sino sinceras. Responde con total honestidad y confianza. ¡Gracias por tomarte el tiempo de compartir un poco más sobre ti!
+            Indicaciones:
+            - Responde de forma concreta y auténtica.
+            - Cada respuesta debe tener máximo 3 líneas o aproximadamente 40 palabras.
+            - Tiempo recomendado por respuesta: 120 segundos.
+          </p>
+        </div>
+      </section>
+
+      <!-- Chatbot lado derecho -->
+      <section class="bg-white p-8 flex flex-col justify-between">
+        <div>
+          <h2 class="text-xl font-semibold text-[#000033] mb-4">Conversa con Neobot</h2>
+
+          <div id="chatbox" class="bg-[#F6F5FA] h-[300px] overflow-y-auto p-4 border border-[#9999AD] rounded-lg mb-4 space-y-3">
+            <!-- Los mensajes y puntos animados se insertan dinámicamente aquí -->
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 mt-2">
+          <input id="responseInput" type="text" placeholder="Escribe tu respuesta aquí..."
+            class="flex-1 border border-[#B3B3C2] rounded-full p-2 px-4 text-[#000033] placeholder:text-[#9999AD]" />
+
+          <button onclick="handleResponse()" class="bg-[#0A29CD] text-white p-3 rounded-full shadow-md hover:bg-[#081a99]">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#000033] text-center text-sm text-[#CCCCD6] py-6">
+    © 2025 - Proyecto Fit Cultural
+  </footer>
+
+  <script>
+    const questions = [
+      "Hola, ¿cuál es tu nombre y apellido?",
+      "¿A qué puesto estás postulando?",
+      "Describe algo nuevo que aprendiste por iniciativa propia y que hoy forma parte de tu trabajo diario.",
+      "Cuando tienes varias tareas al mismo tiempo, ¿cómo decides por dónde empezar?",
+      "Describe una situación en la que tuviste que ser transparente con tu equipo o cliente ante un error o problema.",
+      "¿Qué haces cuando un proyecto cambia de dirección a último minuto?",
+      "¿Cómo crees que te describiría alguien que ha trabajado contigo en equipo?",
+      "¿Qué haces cuando te enfrentas a un desafío para el que no tienes todos los conocimientos necesarios?",
+      "Cuando el tiempo apremia y hay presión en un proyecto, ¿cómo mantienes el enfoque y aseguras resultados?",
+      "¿Has propuesto alguna idea o mejora que se haya implementado? ¿Qué impacto tuvo en tu equipo?",
+      "¿Cómo crees que tu rol profesional cambiará con el avance de la inteligencia artificial en los próximos años?"
+    ];
+
+    let currentQuestion = 0;
+    const answers = [];
+
+    const chatbox = document.getElementById('chatbox');
+    const inputElement = document.getElementById('responseInput');
+    const submitButton = document.querySelector('button');
+
+    function createTypingBubble() {
+      const typingBubble = document.createElement('div');
+      typingBubble.className = 'max-w-[80%] px-4 py-2 rounded-xl text-sm shadow-sm bg-[#F6F5FA] text-[#000033] self-start border border-[#CCCCD6] typing-bubble';
+
+      const dotWrapper = document.createElement('div');
+      dotWrapper.className = 'dot-flash';
+
+      for (let i = 0; i < 3; i++) {
+        const dot = document.createElement('span');
+        dotWrapper.appendChild(dot);
+      }
+
+      typingBubble.appendChild(dotWrapper);
+      chatbox.appendChild(typingBubble);
+      chatbox.scrollTop = chatbox.scrollHeight;
+
+      return typingBubble;
+    }
+
+    function appendMessage(text, type) {
+      const msg = document.createElement('div');
+      msg.className = `max-w-[80%] px-4 py-2 rounded-xl text-sm shadow-sm ${type === 'bot'
+        ? 'bg-[#F6F5FA] text-[#000033] self-start border border-[#CCCCD6]'
+        : 'bg-[#0A29CD] text-white self-end ml-auto'
+      }`;
+      msg.innerText = text;
+      chatbox.appendChild(msg);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function showQuestion() {
+      if (currentQuestion < questions.length) {
+        const typingBubble = createTypingBubble();
+        setTimeout(() => {
+          chatbox.removeChild(typingBubble);
+          appendMessage(questions[currentQuestion], 'bot');
+        }, 2000);
+      } else {
+        const typingBubble = createTypingBubble();
+        setTimeout(() => {
+          chatbox.removeChild(typingBubble);
+          appendMessage("¡Gracias por responder! Hemos recibido tus respuestas.", 'bot'); inputElement.style.display = "none"; submitButton.style.display = "none";
+          
+          // Enviar respuestas al Google Sheets mediante fetch
+          
+          fetch("https://script.google.com/macros/s/AKfycbyYgThniv1fIzxiWEl2iMJZZR-NpMkEAyvY6QB-6AG_mhbAAQBksSPbuDl_8EX7Y08r/exec", {method: "POST",body: JSON.stringify({ answers }),headers: {
+    "Content-Type": "application/json"
+  }
+})
+.then(res => res.text())
+.then(msg => console.log("✅ Respuestas enviadas:", msg))
+.catch(err => console.error("❌ Error al enviar respuestas:", err));
+
+        }, 2000);
+      }
+    }
+
+    function handleResponse() {
+      const response = inputElement.value.trim();
+      if (response === "") return;
+      appendMessage(response, 'user');
+      answers.push(response);
+      inputElement.value = "";
+      currentQuestion++;
+      setTimeout(showQuestion, 600);
+    }
+
+    showQuestion();
+
+    inputElement.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        handleResponse();
+      }
+    });
+  </script>
+</body>
+</html>
